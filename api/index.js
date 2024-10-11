@@ -1,31 +1,18 @@
-// index.js
 const express = require('express');
-const PORT = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const cors = require('cors');
-const fs = require('fs');
 const { extractTextContent, getAnswerFromPdfContent } = require('../controllers/pdfController.module');
-require('dotenv').config();
 
 const app = express();
+const upload = multer({ dest: 'uploads/' });
 
+app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.json({ message: 'Hello, World!' });
 });
-const upload = multer({
-    dest: 'uploads/',
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype !== 'application/pdf') {
-            return cb(new Error('Only PDFs are allowed!'), false);
-        }
-        cb(null, true);
-    },
-});
-
-app.use(cors());
-app.use(bodyParser.json());
 
 // POST /upload
 app.post('/upload', upload.single('file'), async (req, res) => {
@@ -43,7 +30,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
         // Clean up the uploaded file
         fs.unlinkSync(filePath);
-
         res.json(pdfContentResponse);
     } catch (error) {
         console.error("Error occurred:", error);
@@ -68,6 +54,4 @@ app.post('/submit_pdf', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app; // Export the app for Vercel to use
