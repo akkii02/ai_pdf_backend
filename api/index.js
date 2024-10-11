@@ -1,8 +1,4 @@
-const express = require('express');
-const app = express();
-
-app.get('/api/hello', (req, res) => {
-  res.send('Hello');
-});
-
-module.exports = app;
+module.exports = (req, res) => {
+    res.status(200).send('Hello');
+  };
+  
