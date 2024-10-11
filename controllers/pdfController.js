@@ -1,16 +1,14 @@
 const axios = require('axios');
 const pdfParse = require('pdf-parse');
-const fs = require('fs');
 
-// Function to extract text from the PDF file
-exports.extractTextContent = async (file) => {
+// Function to extract text from the PDF file buffer
+exports.extractTextContent = async (buffer) => {
     try {
-        const dataBuffer = fs.readFileSync(file);
-        const pdfData = await pdfParse(dataBuffer);
+        const pdfData = await pdfParse(buffer);
         return {
             success: true,
             message: 'PDF content extracted successfully.',
-            data: pdfData.text
+            data: pdfData.text // pdfData.text contains the extracted text
         };
     } catch (error) {
         console.error('Error extracting text from PDF:', error);
